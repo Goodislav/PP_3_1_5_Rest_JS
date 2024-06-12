@@ -6,9 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.goodislav.spring.boot_security.demo.models.Role;
 import ru.goodislav.spring.boot_security.demo.models.User;
-
 import java.util.List;
-import java.util.Set;
 
 @Service
 public interface UserService extends UserDetailsService {
@@ -21,10 +19,8 @@ public interface UserService extends UserDetailsService {
     void update(User user);
     void deleteById(Long id);
     User findByEmail(String email);
-    void setRoles(User user, Set<Role> roles);
-
-    Set<Role> findRolesByIds(List<Long> roleIds);
-
+    void setRoles(User user, List<Role> roles);
+    List<Role> findRolesByIds(List<Long> roleIds);
     Role findRoleByRoleName(String roleUser);
 
 }

@@ -12,9 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.goodislav.spring.boot_security.demo.models.Role;
 import ru.goodislav.spring.boot_security.demo.models.User;
 import ru.goodislav.spring.boot_security.demo.services.UserService;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -57,7 +56,7 @@ public class AdminController {
             logger.error("Error adding user: " + result.getAllErrors());
             return "admin/addUser";
         }
-        Set<Role> roles = new HashSet<>();
+        List<Role> roles = new ArrayList<>();
         if (roleIds != null) {
             for (Long roleId : roleIds) {
                 roles.add(userService.findRoleById(roleId));
@@ -118,7 +117,7 @@ public class AdminController {
                 updateUser.setPassword(password);
             }
 
-            Set<Role> roles = new HashSet<>();
+            List<Role> roles = new ArrayList<>();
             if (roleIds != null) {
                 for (Long roleId : roleIds) {
                     roles.add(userService.findRoleById(roleId));

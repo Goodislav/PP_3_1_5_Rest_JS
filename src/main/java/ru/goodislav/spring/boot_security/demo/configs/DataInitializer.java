@@ -8,7 +8,7 @@ import ru.goodislav.spring.boot_security.demo.models.Role;
 import ru.goodislav.spring.boot_security.demo.models.User;
 import ru.goodislav.spring.boot_security.demo.repositories.RoleRepository;
 import ru.goodislav.spring.boot_security.demo.repositories.UserRepository;
-import java.util.Set;
+import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -39,7 +39,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setAge(35);
             admin.setEmail("admin@mail.com");
             admin.setPassword(passwordEncoder.encode("1111"));
-            admin.setRoles(Set.of(adminRole));
+            admin.setRoles(List.of(adminRole));
             userRepository.save(admin);
         }
     }

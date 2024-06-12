@@ -12,9 +12,8 @@ import ru.goodislav.spring.boot_security.demo.models.Role;
 import ru.goodislav.spring.boot_security.demo.models.User;
 import ru.goodislav.spring.boot_security.demo.repositories.RoleRepository;
 import ru.goodislav.spring.boot_security.demo.repositories.UserRepository;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -124,13 +123,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void setRoles(User user, Set<Role> roles) {
+    public void setRoles(User user, List<Role> roles) {
         user.setRoles(roles);
     }
 
     @Override
-    public Set<Role> findRolesByIds(List<Long> roleIds) {
-        Set<Role> roles = new HashSet<>();
+    public List<Role> findRolesByIds(List<Long> roleIds) {
+        List<Role> roles = new ArrayList<>();
         for (Long id : roleIds) {
             roles.add(roleRepository.findById(id)
                  .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + id)));
