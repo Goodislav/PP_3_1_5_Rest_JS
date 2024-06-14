@@ -1,154 +1,70 @@
 package ru.goodislav.spring.boot_security.demo.services;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.goodislav.spring.boot_security.demo.models.Role;
+import ru.goodislav.spring.boot_security.demo.dao.UserDao;
 import ru.goodislav.spring.boot_security.demo.models.User;
-import ru.goodislav.spring.boot_security.demo.repositories.RoleRepository;
-import ru.goodislav.spring.boot_security.demo.repositories.UserRepository;
-import java.util.ArrayList;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserDao userDao;
+    private RoleService roleService;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDao userDao, RoleService roleService, BCryptPasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
-        }
-        return user;
+    public List<User> getUsers() {
+        return userDao.getUsers();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Role> findAllRoles() {
-        return roleRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Role findRoleById(Long id) {
-        return roleRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public User findById(Long id) {
-        return userRepository.getReferenceById(id);
-    }
-
-    @Override
     @Transactional
-    public void save(User user) {
-        if (user.getRoles().isEmpty()) {
-            Role userRole = roleRepository.findByRole("ROLE_USER");
-            if (userRole != null) {
-                user.getRoles().add(userRole);
-            }
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+    @Override
+    public void save(User user, String[] roles, String pass) {
+        user.setPassword(passwordEncoder.encode(pass));
+        user.setRoles(Arrays.stream(roles)
+                .map(role -> roleService.findByRole(role))
+                .collect(Collectors.toList()));
+        userDao.save(user);
     }
 
     @Override
-    @Transactional
-    public void update(User user) {
-        User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!user.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-
-        existingUser.setName(user.getName());
-        existingUser.setLastname(user.getLastname());
-        existingUser.setAge(user.getAge());
-        existingUser.setEmail(user.getEmail());
-
-        if (user.getRoles().isEmpty()) {
-            Role userRole = roleRepository.findByRole("ROLE_USER");
-            if (userRole != null) {
-                user.getRoles().add(userRole);
-            }
-        }
-
-        existingUser.setRoles(user.getRoles());
-        userRepository.save(existingUser);
+    public User findUser(int id) {
+        return userDao.findUser(id);
     }
 
     @Override
-    @Transactional
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userDao.findByEmail(email);
     }
 
-    @Override
     @Transactional
-    public void setRoles(User user, List<Role> roles) {
-        user.setRoles(roles);
-    }
-
     @Override
-    public List<Role> findRolesByIds(List<Long> roleIds) {
-        List<Role> roles = new ArrayList<>();
-        for (Long id : roleIds) {
-            roles.add(roleRepository.findById(id)
-                 .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + id)));
-        }
-        return roles;
+    public void update(User user, int id, String[] roles, String pass) {
+        user.setId(id);
+        user.setPassword(passwordEncoder.encode(pass));
+        user.setRoles(Arrays.stream(roles)
+                .map(role -> roleService.findByRole(role))
+                .collect(Collectors.toList()));
+        userDao.update(user);
     }
 
+    @Transactional
     @Override
-    public Role findRoleByRoleName(String roleName) {
-        return roleRepository.findByRole(roleName);
+    public void delete(int id) {
+        userDao.delete(id);
     }
 
-    @PostConstruct
-    public void init() {
-        if (roleRepository.findByRole("ROLE_ADMIN") == null) {
-            roleRepository.save(new Role("ROLE_ADMIN"));
-        }
-        if (roleRepository.findByRole("ROLE_USER") == null) {
-            roleRepository.save(new Role("ROLE_USER"));
-        }
-    }
 }

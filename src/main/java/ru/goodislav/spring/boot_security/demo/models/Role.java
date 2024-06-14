@@ -1,17 +1,20 @@
 package ru.goodislav.spring.boot_security.demo.models;
 
-import org.springframework.security.core.GrantedAuthority;
 import jakarta.persistence.*;
-import java.util.Objects;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "role")
+    private int id;
+    @Column(unique = true)
     private String role;
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users;
 
     public Role() {
     }
@@ -25,11 +28,16 @@ public class Role implements GrantedAuthority {
         return role;
     }
 
-    public Long getId() {
+    @Override
+    public String toString() {
+        return role.replace("ROLE_", "");
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -41,25 +49,11 @@ public class Role implements GrantedAuthority {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return role.contains("ADMIN") ? "ADMIN" : "USER";
+    public List<User> getUsers() {
+        return users;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role1 = (Role) o;
-        return Objects.equals(id, role1.id) && Objects.equals(role, role1.role);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((role == null) ? 0 : role.hashCode());
-        return result;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }
