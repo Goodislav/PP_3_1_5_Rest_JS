@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -26,9 +28,9 @@
 <div class="container-fluid">
     <div class="row navbar navbar-dark bg-dark">
         <div class="col">
-            <b class="text-white" th:utext="${user.getEmail()}"></b>
+            <b class="text-white" th:text="${user.getEmail()}"></b>
             <span class="text-white"> with roles: </span>
-            <span class="text-white" th:each="roles : ${user.getRoles()}" th:utext="${roles.toString()} + ' '"></span>
+            <span class="text-white" th:each="roles : ${user.getRoles()}" th:text="${roles.toString()} + ' '"></span>
         </div>
         <div class="col-auto">
             <a class="nav-link text-white" href="/logout">Logout</a>
@@ -40,11 +42,12 @@
     <div class="row">
         <div class="col-2 sidebar pt-3 pl-0 pr-0">
             <nav class="nav flex-column nav-pills">
-                <a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" href="/admin">Admin</a>
-                <a class="nav-link active" href="/user">User</a>
+                <!-- Link for Admin only -->
+                <a class="nav-link" th:href="@{/admin}" sec:authorize="hasRole('ROLE_ADMIN')">Admin</a>
+                <!-- Link for User only -->
+                <a class="nav-link active" th:href="@{/user}" sec:authorize="isAuthenticated()">User</a>
             </nav>
         </div>
-
         <div class="col-10 main-content pt-3 pl-0 pr-0">
             <div class="container">
                 <h1>User information-page</h1>
@@ -66,13 +69,13 @@
                             </thead>
                             <tbody>
                             <tr th:object="${user}">
-                                <td th:utext="${user.getId()}">id</td>
-                                <td th:utext="${user.getFirstName()}">First name</td>
-                                <td th:utext="${user.getLastName()}">Last name</td>
-                                <td th:utext="${user.getAge()}">Age</td>
-                                <td th:utext="${user.getEmail()}">Email</td>
+                                <td th:text="${user.getId()}">id</td>
+                                <td th:text="${user.getFirstName()}">First name</td>
+                                <td th:text="${user.getLastName()}">Last name</td>
+                                <td th:text="${user.getAge()}">Age</td>
+                                <td th:text="${user.getEmail()}">Email</td>
                                 <td>
-                                    <span th:each="roles : ${user.getRoles()}" th:utext="${roles.toString()} + ' '">Roles</span>
+                                    <span th:each="roles : ${user.getRoles()}" th:text="${roles.toString()} + ' '">Roles</span>
                                 </td>
                             </tr>
                             </tbody>
@@ -86,9 +89,8 @@
 
 <!-- Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDzwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
-
 

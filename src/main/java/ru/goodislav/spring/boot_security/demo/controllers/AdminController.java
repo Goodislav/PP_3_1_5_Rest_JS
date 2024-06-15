@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.goodislav.spring.boot_security.demo.models.Role;
 import ru.goodislav.spring.boot_security.demo.models.User;
 import ru.goodislav.spring.boot_security.demo.services.UserService;
 import java.security.Principal;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private UserService userService;
+    private final UserService userService;
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     @Autowired
@@ -69,7 +70,7 @@ public class AdminController {
         if (roles == null || roles.length == 0) {
             logger.info("Roles not provided, retrieving existing roles for user with id: {}", id);
             User existingUser = userService.findUser(id);
-            roles = existingUser.getRoles().stream().map(role -> role.getRole()).toArray(String[]::new);
+            roles = existingUser.getRoles().stream().map(Role::getRole).toArray(String[]::new);
         }
         userService.update(user, id, roles, pass);
         logger.info("User updated successfully: {}", user);
