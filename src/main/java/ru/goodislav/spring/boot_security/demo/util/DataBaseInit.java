@@ -8,6 +8,9 @@ import ru.goodislav.spring.boot_security.demo.models.User;
 import ru.goodislav.spring.boot_security.demo.services.RoleService;
 import ru.goodislav.spring.boot_security.demo.services.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class DataBaseInit {
     private UserService userService;
@@ -21,15 +24,29 @@ public class DataBaseInit {
 
     @PostConstruct
     private void postConstruct() {
-        roleService.save(new Role("ROLE_ADMIN"));
-        roleService.save(new Role("ROLE_USER"));
+        if(!roleService.exist("ROLE_ADMIN")) {
+            Role adminRole = new Role("ROLE_ADMIN");
+            roleService.save(adminRole);
+        }
 
-        String[] rolesAdmin = {"ROLE_ADMIN", "ROLE_USER"};
-        userService.save(new User("admin", "admin", 35, "admin@mail.com"),
-                rolesAdmin, "1111");
+        if(!roleService.exist("ROLE_USER")) {
+            Role userRole = new Role("ROLE_USER");
+            roleService.save(userRole);
+        }
 
-        String[] rolesUser = {"ROLE_USER"};
-        userService.save(new User("user", "user", 25, "user@mail.com"),
-                rolesUser, "2222");
+        if (!userService.exist("admin@mail.ru")) {
+            List<Role> adminRolesList = new ArrayList<>();
+            adminRolesList.add(roleService.findByRole("ROLE_ADMIN"));
+            adminRolesList.add(roleService.findByRole("ROLE_USER"));
+            userService.save(new User("admin", "admin", 35, "admin@mail.com"),
+                new String[] {"ROLE_ADMIN", "ROLE_USER"}, "1111");
+        }
+
+        if (!userService.exist("user@mail.ru")) {
+            List<Role> userRolesList = new ArrayList<>();
+            userRolesList.add(roleService.findByRole("ROLE_USER"));
+            userService.save(new User("user", "user", 25, "user@mail.com"),
+                new String[] {"ROLE_USER"}, "2222");
+        }
     }
 }

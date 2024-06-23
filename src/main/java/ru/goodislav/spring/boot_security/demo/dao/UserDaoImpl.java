@@ -45,4 +45,14 @@ public class UserDaoImpl implements UserDao {
         System.out.println(user);
         entityManager.remove(user);
     }
+
+    @Override
+    public boolean exist(String email) {
+        Query query = entityManager.createQuery("SELECT u FROM User u WHERE u.email = : e");
+        query.setParameter("e", email);
+        if (((org.hibernate.query.Query)query).list().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 }

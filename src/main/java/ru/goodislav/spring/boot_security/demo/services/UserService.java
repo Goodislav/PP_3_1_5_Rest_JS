@@ -11,5 +11,6 @@ public interface UserService {
     User findByEmail(String email);
     void update(User user, int id, String[] roles, String pass);
     void delete(int id);
+    boolean exist(String email);
 }
 
