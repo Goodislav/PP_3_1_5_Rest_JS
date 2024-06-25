@@ -38,15 +38,17 @@ public class DataBaseInit {
             List<Role> adminRolesList = new ArrayList<>();
             adminRolesList.add(roleService.findByRole("ROLE_ADMIN"));
             adminRolesList.add(roleService.findByRole("ROLE_USER"));
-            userService.save(new User("admin", "admin", 35, "admin@mail.com"),
-                new String[] {"ROLE_ADMIN", "ROLE_USER"}, "1111");
+            User admin = new User("admin", "admin", 35, "admin@mail.com",
+                    "1111",adminRolesList);
+            userService.save(admin);
         }
 
         if (!userService.exist("user@mail.ru")) {
             List<Role> userRolesList = new ArrayList<>();
             userRolesList.add(roleService.findByRole("ROLE_USER"));
-            userService.save(new User("user", "user", 25, "user@mail.com"),
-                new String[] {"ROLE_USER"}, "2222");
+            User user = new User("user", "user", 25, "user@mail.com",
+                    "2222", userRolesList);
+            userService.save(user);
         }
     }
 }

@@ -119,42 +119,45 @@ on(document, 'click', '.eBtn', e => {
 })
 
 editModal.addEventListener('submit', (e) => {
-    e.preventDefault()
-    let id = 0
-    let rolesListEdit = [];
-    for(let i = 0; i < $('#rolesEdit').val().length; i++){
-        if ($('#rolesEdit').val()[i]==='ROLE_ADMIN') {
-            id=1
-        } else {
-            id=2
-        }
-        rolesListEdit[i] = {id: id, role: $('#rolesEdit').val()[i]} ;
-    }
+    e.preventDefault();
+
+    let id = idEdit.value;
+    let rolesListEdit = $('#rolesEdit').val().map(role => ({
+        id: role === 'ROLE_ADMIN' ? 1 : 2,
+        role: role
+    }));
+
     let editUser = {
-        id: idEdit.value,
+        id: id,
         firstName: firstNameEdit.value,
         lastName: lastNameEdit.value,
         age: ageEdit.value,
         email: emailEdit.value,
         password: passEdit.value,
         roles: rolesListEdit
-    }
+    };
+
     fetch(url2, {
         method: 'PUT',
         headers: {
-            'Content-Type':'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(editUser)
     })
         .then(response => response.json())
         .then((data) => {
-            const editUserInTable = []
-            editUserInTable.push(data)
-            showTable(editUserInTable)
+            showTable([data]);
+            document.getElementById(id).remove();
+            $('#editModal').modal('hide');
         })
-        .then(() => document.getElementById(idEdit.value).remove())
-        .then(()=> document.getElementById('editModalClose').click())
-})
+        .catch(error => {
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            passEdit.value = '';
+        });
+});
+
 
 //Delete Modal
 on(document, 'click', '.dBtn', e => {

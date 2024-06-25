@@ -6,10 +6,9 @@ import java.util.List;
 
 public interface UserService {
     List<User> getUsers();
-    void save(User user, String[] roles, String pass);
-    User findUser(int id);
+    void save(User user);
     User findByEmail(String email);
-    void update(User user, int id, String[] roles, String pass);
+    void update(User user);
     void delete(int id);
     boolean exist(String email);
 }

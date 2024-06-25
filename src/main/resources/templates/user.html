@@ -1,7 +1,6 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -12,35 +11,19 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <title>About user</title>
-    <style>
-        .sidebar {
-            background-color: white;
-            height: 100vh;
-        }
-        .main-content {
-            background-color: #f8f9fa;
-        }
-    </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="container-fluid">
-    <div class="row navbar navbar-dark bg-dark">
-        <div class="col">
-            <b class="text-white" th:text="${user.getEmail()}"></b>
-            <span class="text-white"> with roles: </span>
-            <span class="text-white" th:each="roles : ${user.getRoles()}" th:text="${roles.toString()} + ' '"></span>
+<div class="container" style="max-width: 100%">
+    <div class="row navbar navbar-dark bg-dark pd-0 pt-0">
+        <div id="navBarUser" class="col">
         </div>
-        <div class="col-auto">
-            <a class="nav-link text-white" href="/logout">Logout</a>
-        </div>
+        <div class="col-1"><a class="nav-link active text-white-50" href="/logout">Logout</a></div>
     </div>
 </div>
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-2 sidebar pt-3 pl-0 pr-0">
+<div class="container h-100 d-inline-block" style="max-width: 100%">
+    <div class="row" style="height: 120vh">
+        <div class="col-2 pt-3 pl-0 pr-0">
             <nav class="nav flex-column nav-pills">
                 <!-- Link for Admin only -->
                 <a class="nav-link" th:href="@{/admin}" sec:authorize="hasRole('ROLE_ADMIN')">Admin</a>
@@ -48,14 +31,12 @@
                 <a class="nav-link active" th:href="@{/user}" sec:authorize="isAuthenticated()">User</a>
             </nav>
         </div>
-        <div class="col-10 main-content pt-3 pl-0 pr-0">
+        <div class="col-10 bg-light pt-3 pl-0 pr-0 ">
             <div class="container">
                 <h1>User information-page</h1>
                 <div class="card">
-                    <div class="card-header bg-light font-weight-bold">
-                        <h5>About user</h5>
-                    </div>
-                    <div class="card-body">
+                    <div class="bg-light p-2 pl-4 font-weight-bold"><h5>About user</h5></div>
+                    <div class="card-block p-3">
                         <table class="table table-striped">
                             <thead>
                             <tr>
@@ -67,17 +48,7 @@
                                 <th scope="col">Role</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr th:object="${user}">
-                                <td th:text="${user.getId()}">id</td>
-                                <td th:text="${user.getFirstName()}">First name</td>
-                                <td th:text="${user.getLastName()}">Last name</td>
-                                <td th:text="${user.getAge()}">Age</td>
-                                <td th:text="${user.getEmail()}">Email</td>
-                                <td>
-                                    <span th:each="roles : ${user.getRoles()}" th:text="${roles.toString()} + ' '">Roles</span>
-                                </td>
-                            </tr>
+                            <tbody id="userInfo">
                             </tbody>
                         </table>
                     </div>
@@ -87,10 +58,9 @@
     </div>
 </div>
 
-<!-- Bootstrap JS -->
+<script th:src="@{user.js}" src="../static/user.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDzwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
-
