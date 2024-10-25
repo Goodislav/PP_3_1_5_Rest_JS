@@ -34,7 +34,7 @@ public class DataBaseInit {
             roleService.save(userRole);
         }
 
-        if (!userService.exist("admin@mail.ru")) {
+        if (!userService.exist("admin@mail.com")) {
             List<Role> adminRolesList = new ArrayList<>();
             adminRolesList.add(roleService.findByRole("ROLE_ADMIN"));
             adminRolesList.add(roleService.findByRole("ROLE_USER"));
@@ -43,7 +43,7 @@ public class DataBaseInit {
             userService.save(admin);
         }
 
-        if (!userService.exist("user@mail.ru")) {
+        if (!userService.exist("user@mail.com")) {
             List<Role> userRolesList = new ArrayList<>();
             userRolesList.add(roleService.findByRole("ROLE_USER"));
             User user = new User("user", "user", 25, "user@mail.com",
