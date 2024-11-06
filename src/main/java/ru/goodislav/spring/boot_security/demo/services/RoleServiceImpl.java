@@ -9,7 +9,7 @@ import ru.goodislav.spring.boot_security.demo.models.Role;
 @Service
 public class RoleServiceImpl implements RoleService{
 
-    private RoleDao roleDao;
+    private final RoleDao roleDao;
 
     @Autowired
     public RoleServiceImpl(RoleDao roleDao) {
